@@ -1,6 +1,8 @@
 name: "Build my JAVA Application"
 on:
-  push: tags
+  push:
+    tags:
+      - '*'
 jobs:
   build:
     runs-on: ubuntu-latest
