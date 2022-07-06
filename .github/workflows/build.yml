@@ -18,8 +18,19 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: maven
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
       - name: Builder notre projet avec maven
         run: mvn package
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=romain-gh-action_CDA-FOAD2-java
       - name: "Stocker le jar en tant qu'artefact"
         uses: actions/upload-artifact@v3
         with:
